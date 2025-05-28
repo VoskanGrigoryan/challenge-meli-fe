@@ -1,9 +1,10 @@
 import axios from "axios";
 
-const JIRA_API_URL = "https://your-domain.atlassian.net/rest/api/3";
+const JIRA_API_URL = `${process.env.JIRA_DOMAIN}/rest/api/3`;
+
 const auth = {
-  username: "your@email.com",
-  password: "YOUR_API_TOKEN", // From Jira settings
+  username: process.env.JIRA_EMAIL!,
+  password: process.env.JIRA_API_TOKEN!,
 };
 
 export const createJiraIssue = async (title: string) => {
@@ -11,7 +12,7 @@ export const createJiraIssue = async (title: string) => {
     `${JIRA_API_URL}/issue`,
     {
       fields: {
-        project: { key: "YOUR_PROJECT_KEY" },
+        project: { key: process.env.JIRA_PROJECT_KEY },
         summary: title,
         issuetype: { name: "Task" },
       },
