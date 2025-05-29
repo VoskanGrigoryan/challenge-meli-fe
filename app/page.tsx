@@ -1,5 +1,10 @@
 import { MainLayout } from "@/src/layout/MainLayout";
+import Dashboard from "./views/dashboard/page";
 
-export default function Home() {
-  return <MainLayout>test</MainLayout>;
+export default async function Home() {
+  return (
+    <MainLayout headerTitle={"Dashboard"}>
+      <Dashboard />
+    </MainLayout>
+  );
 }

@@ -33,7 +33,7 @@ export const getAllJiraIssues = async (maxResults = 50, startAt = 0) => {
       jql: `project = ${JIRA_PROJECT_KEY}`,
       maxResults,
       startAt,
-      fields: "summary,status,labels",
+      fields: "summary,status,labels,description",
     },
   });
 
