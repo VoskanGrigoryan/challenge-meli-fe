@@ -7,6 +7,7 @@ interface JiraState {
   loading: boolean;
   error: string | null;
 }
+
 const initialState: JiraState = {
   issues: [],
   loading: false,
