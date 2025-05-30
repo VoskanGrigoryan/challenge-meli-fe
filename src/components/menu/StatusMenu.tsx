@@ -29,8 +29,7 @@ const StatusMenu = ({ issue }: { issue: IIssue }) => {
       showToast({
         title: "Error al cambiar estado",
         message:
-          error?.data?.message ||
-          "No se pudo cambiar el estado del issue.",
+          error?.data?.message || "No se pudo cambiar el estado del issue.",
         color: "red",
       });
     }

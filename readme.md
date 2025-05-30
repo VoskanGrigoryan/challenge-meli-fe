@@ -1,0 +1,1 @@
+Los tests se encuentran en la carpeta __tests__, y cubren componentes principales y lógica de Redux.
