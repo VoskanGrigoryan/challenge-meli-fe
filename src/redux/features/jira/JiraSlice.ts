@@ -1,70 +1,89 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createIssue, deleteIssue, markIssueDone } from "./jiraThunks";
-import { JiraIssue } from "./jiraTypes";
+import { IIssue } from "@/src/components/card/IssueCard";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface JiraState {
-  issues: JiraIssue[];
-  loading: boolean;
-  error: string | null;
-}
+export const jiraApi = createApi({
+  reducerPath: "jiraApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "/api/jira",
+    prepareHeaders: (headers) => {
+      headers.set("Content-Type", "application/json");
+      return headers;
+    },
+  }),
+  tagTypes: ["Issues"],
+  endpoints: (builder) => ({
+    // Get all issues
+    getAllJiraIssues: builder.query<IIssue[], void>({
+      query: () => "",
+      providesTags: ["Issues"],
+      transformResponse: (response: any) =>
+        response.issues.map((issue: any) => ({
+          key: issue.key,
+          summary: issue.fields.summary,
+          status: issue.fields.status.name,
+          labels: issue.fields.labels || [],
+          description:
+            issue.fields.description?.content?.[0]?.content?.[0]?.text || "",
+          color: issue.fields.status.statusCategory.colorName || "gray",
+        })),
+    }),
 
-const initialState: JiraState = {
-  issues: [],
-  loading: false,
-  error: null,
-};
+    // Create issue
+    createJiraIssue: builder.mutation<
+      { key: string },
+      {
+        summary: string;
+        description?: string;
+        labels?: string[];
+      }
+    >({
+      query: (body) => ({
+        url: "",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Issues"],
+    }),
+    // Delete issue
+    deleteJiraIssue: builder.mutation<void, string>({
+      query: (issueKey) => ({
+        url: `?issueKey=${issueKey}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Issues"],
+    }),
 
-const setLoading = (state: JiraState) => {
-  state.loading = true;
-  state.error = null;
-};
-
-const setError = (state: JiraState, action: any, defaultMsg: string) => {
-  state.loading = false;
-  state.error = action.error.message ?? defaultMsg;
-};
-
-const jiraSlice = createSlice({
-  name: "jira",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(createIssue.pending, setLoading)
-      .addCase(
-        createIssue.fulfilled,
-        (state, action: PayloadAction<JiraIssue>) => {
-          state.loading = false;
-          state.issues.push(action.payload);
-        }
-      )
-      .addCase(createIssue.rejected, (state, action) =>
-        setError(state, action, "Failed to create issue")
-      )
-      .addCase(deleteIssue.pending, setLoading)
-      .addCase(
-        deleteIssue.fulfilled,
-        (state, action: PayloadAction<string>) => {
-          state.loading = false;
-          state.issues = state.issues.filter((i) => i.key !== action.payload);
-        }
-      )
-      .addCase(deleteIssue.rejected, (state, action) =>
-        setError(state, action, "Failed to delete issue")
-      )
-      .addCase(markIssueDone.pending, setLoading)
-      .addCase(
-        markIssueDone.fulfilled,
-        (state, action: PayloadAction<string>) => {
-          state.loading = false;
-          const issue = state.issues.find((i) => i.key === action.payload);
-          if (issue) issue.status = "Done";
-        }
-      )
-      .addCase(markIssueDone.rejected, (state, action) =>
-        setError(state, action, "Failed to update issue status")
-      );
-  },
+    // Change issue status (transition)
+    changeIssueStatus: builder.mutation<
+      void,
+      { issueKey: string; status: string }
+    >({
+      query: ({ issueKey, status }) => ({
+        url: "?action=transition",
+        method: "POST",
+        body: {
+          issueKey,
+          transitionId: getTransitionId(status),
+        },
+      }),
+      invalidatesTags: ["Issues"],
+    }),
+  }),
 });
 
-export default jiraSlice.reducer;
+// Helper function for transition IDs
+const getTransitionId = (status: string): string => {
+  const transitions: Record<string, string> = {
+    "to do": "11",
+    "in progress": "21",
+    done: "31",
+  };
+  return transitions[status?.toLowerCase()] || "21";
+};
+
+export const {
+  useGetAllJiraIssuesQuery,
+  useCreateJiraIssueMutation,
+  useDeleteJiraIssueMutation,
+  useChangeIssueStatusMutation,
+} = jiraApi;

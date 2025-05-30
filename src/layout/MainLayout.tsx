@@ -35,7 +35,7 @@ export function MainLayout({
           />
           <span style={{ flex: 1 }} />
           <span style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ color: "#000", fontSize: 22, letterSpacing: 1 }}>
+            <span style={{ color: "#228be6", fontSize: 22, letterSpacing: 1, fontWeight: 600 }}>
               {headerTitle}
             </span>
           </span>

@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import jiraReducer from "./features/jira/jiraSlice";
+import { jiraApi } from "./features/jira/JiraSlice";
 
 export const store = configureStore({
   reducer: {
-    jira: jiraReducer,
+    [jiraApi.reducerPath]: jiraApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(jiraApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
