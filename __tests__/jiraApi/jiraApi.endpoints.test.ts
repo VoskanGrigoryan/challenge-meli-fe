@@ -1,4 +1,4 @@
-import { jiraApi } from '../src/redux/features/jira/JiraSlice';
+import { jiraApi } from "@/src/redux/features/jira/JiraSlice";
 
 describe('jiraApi endpoints', () => {
   it('should have getAllJiraIssues endpoint', () => {

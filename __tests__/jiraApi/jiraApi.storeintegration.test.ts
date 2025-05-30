@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { jiraApi } from '../src/redux/features/jira/JiraSlice';
+import { jiraApi } from '../../src/redux/features/jira/JiraSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
-describe('jiraApi integration', () => {
+describe('jiraApi store integration', () => {
   let store: ReturnType<typeof configureStore>;
 
   beforeEach(() => {
@@ -16,10 +16,8 @@ describe('jiraApi integration', () => {
     setupListeners(store.dispatch);
   });
 
-  it('should start with initial state', () => {
-    const state = store.getState()[jiraApi.reducerPath];
-    expect(state).toBeDefined();
+  it('should have a defined state for jiraApi', () => {
+    const state = store.getState() as any;
+    expect(state[jiraApi.reducerPath]).toBeDefined();
   });
-
-  // You can add more integration tests with MSW or fetch mocks for endpoints
 });
