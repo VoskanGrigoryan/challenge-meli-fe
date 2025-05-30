@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionIcon, Menu } from "@mantine/core";
-import { IconDotsVertical, IconEdit, IconFileXFilled } from "@tabler/icons-react";
+import { IconArrowsMaximize, IconDotsVertical, IconFileXFilled } from "@tabler/icons-react";
 
  const ActionsMenu = ({ issueKey, onDelete }: { issueKey: string; onDelete?: (issueKey: string) => void }) => {
   return (
@@ -13,7 +13,7 @@ import { IconDotsVertical, IconEdit, IconFileXFilled } from "@tabler/icons-react
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>Acciones</Menu.Label>
-        <Menu.Item leftSection={<IconEdit size={14} />}>Editar</Menu.Item>
+        <Menu.Item leftSection={<IconArrowsMaximize size={14} />} disabled={true}>Mostrar detalle</Menu.Item>
         <Menu.Item
           leftSection={<IconFileXFilled size={14} />}
           color="red"
