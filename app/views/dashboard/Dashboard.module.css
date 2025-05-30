@@ -6,3 +6,17 @@
   padding: 1rem; /* Usa padding interno para espaciar el contenido */
   box-sizing: border-box;
 }
+
+.menuContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 400px;
+  padding-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .menuContainer {
+    flex-direction: column;
+  }
+}

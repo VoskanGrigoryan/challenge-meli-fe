@@ -4,16 +4,17 @@ import { ReactNode } from "react";
 interface IMyButton extends ButtonProps {
   children: ReactNode;
   ariaLabel?: string;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  type?: "button" | "submit" | "reset";
 }
 
 const MyButton = ({
   children,
   size = "sm",
-  variant = "gradient",
+  variant = "filled",
   radius = "sm",
+  fullWidth = true,
   ariaLabel,
-  onClick,
   ...props
 }: IMyButton) => {
   return (
@@ -21,8 +22,8 @@ const MyButton = ({
       size={size}
       variant={variant}
       radius={radius}
+      fullWidth={fullWidth}
       aria-label={ariaLabel}
-      onClick={onClick}
       {...props}
     >
       {children}
