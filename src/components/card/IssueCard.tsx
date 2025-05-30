@@ -19,7 +19,7 @@ interface IssueCardProps {
 
 export default function IssueCard({ issue, onDelete }: IssueCardProps) {
   return (
-    <MyPaper style={{ maxHeight: 200 }}>
+    <MyPaper style={{ maxHeight: 250 }}>
       <Group justify="space-between" mb="xs" align="flex-start">
         <StatusMenu issue={issue} />
         <ActionsMenu issueKey={issue.key} onDelete={onDelete} />
