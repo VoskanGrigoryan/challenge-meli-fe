@@ -1,4 +1,4 @@
-import {  Badge, Group, Text } from "@mantine/core";
+import { Badge, Group, Text } from "@mantine/core";
 import MyPaper from "../../ui/paper";
 import ActionsMenu from "../menu/ActionsMenu";
 import StatusMenu from "../menu/StatusMenu";
@@ -18,24 +18,21 @@ interface IssueCardProps {
 }
 
 export default function IssueCard({ issue, onDelete }: IssueCardProps) {
-
   return (
-    <MyPaper>
+    <MyPaper style={{ maxHeight: 200 }}>
       <Group justify="space-between" mb="xs" align="flex-start">
-        <StatusMenu issue={issue}  />
+        <StatusMenu issue={issue} />
         <ActionsMenu issueKey={issue.key} onDelete={onDelete} />
       </Group>
 
       <Group gap="xs" justify="start">
         <Text fw={500} size="md">
-        {issue?.summary} 
-      </Text>
-      <Text size="xs">
-        {issue?.key && `(${issue.key})`}
-      </Text>
+          {issue?.summary}
+        </Text>
+        <Text size="xs">{issue?.key && `(${issue.key})`}</Text>
       </Group>
 
-      <Text size="sm" c="dimmed" mt="xs" lineClamp={4}>
+      <Text size="sm" c="dimmed" mt="xs" lineClamp={3}>
         {issue?.description || "No description provided."}
       </Text>
 
@@ -47,17 +44,16 @@ export default function IssueCard({ issue, onDelete }: IssueCardProps) {
           return (
             <>
               {visibleLabels.map((label: string) => (
-                <Badge
-                size="sm"
-                  key={label}
-                  variant="outline"
-                  color="blue"
-                >
+                <Badge size="sm" key={label} variant="outline" color="blue">
                   {label}
                 </Badge>
               ))}
               {extraCount > 0 && (
-                <Badge variant="filled" color="gray" style={{ cursor: "pointer" }}>
+                <Badge
+                  variant="filled"
+                  color="gray"
+                  style={{ cursor: "pointer" }}
+                >
                   +{extraCount} more
                 </Badge>
               )}
