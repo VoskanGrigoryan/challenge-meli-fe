@@ -1,7 +1,6 @@
 "use client";
 
-import { AppShell, Burger, Group } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { AppShell, Group } from "@mantine/core";
 import classes from "./MainLayout.module.css";
 
 export function MainLayout({
@@ -11,8 +10,6 @@ export function MainLayout({
   children: React.ReactNode;
   headerTitle?: string;
 }) {
-  const [opened, { toggle }] = useDisclosure();
-
   return (
     <AppShell
       header={{ height: 60 }}
