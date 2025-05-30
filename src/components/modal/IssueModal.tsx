@@ -17,6 +17,8 @@ import {
   useChangeIssueStatusMutation,
 } from "@/src/redux/features/jira/JiraSlice";
 import { useToast } from "@/src/components/toast/ToastProvider";
+import { useDispatch } from "react-redux";
+import { addIssue, updateIssue } from "@/src/redux/features/jira/jiraLocalSlice";
 
 interface FormValues {
   title: string;
@@ -47,6 +49,7 @@ export default function IssueModal({
     },
   });
 
+  const dispatch = useDispatch();
   const [createJiraIssue, { isLoading: isCreating }] =
     useCreateJiraIssueMutation();
   const [changeIssueStatus] = useChangeIssueStatusMutation();
@@ -61,12 +64,29 @@ export default function IssueModal({
         labels: values.labels,
       }).unwrap();
 
+      // Construct the new IIssue object for local state
+      const newIssue = {
+        key: result.key,
+        summary: values.title,
+        status: values.status,
+        labels: values.labels,
+        description: values.description,
+        color:
+          values.status === "Done"
+            ? "green"
+            : values.status === "In Progress"
+            ? "yellow"
+            : "gray",
+      };
+      dispatch(addIssue(newIssue));
+
       // Update status if not default
       if (values.status !== "To Do") {
         await changeIssueStatus({
           issueKey: result.key,
           status: values.status,
         }).unwrap();
+        dispatch(updateIssue({ ...newIssue, status: values.status }));
       }
 
       showToast({
@@ -79,10 +99,9 @@ export default function IssueModal({
       }, 1000); // Close modal after 1 second
     } catch (error) {
       showToast({
-        title: "Error",
-        message: "No se pudo crear la tarea. Intentá de nuevo.",
+        title: "Error al crear tarea",
+        message: "No se pudo crear la tarea en Jira.",
         color: "red",
-        duration: 3000,
       });
     }
   };

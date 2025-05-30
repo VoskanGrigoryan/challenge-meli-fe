@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Tooltip } from "@mantine/core";
+import { Grid, Title, Tooltip } from "@mantine/core";
 import styles from "./Dashboard.module.css";
 import IssueCard, { IIssue } from "@/src/components/card/IssueCard";
 import {
@@ -22,7 +22,10 @@ import IssueModal from "@/src/components/modal/IssueModal";
 import { useDisclosure } from "@mantine/hooks";
 import { ToastProvider } from "@/src/components/toast/ToastProvider";
 import { useDispatch, useSelector } from "react-redux";
-import { setIssues } from "@/src/redux/features/jira/jiraLocalSlice";
+import {
+  setIssues,
+  deleteIssue,
+} from "@/src/redux/features/jira/jiraLocalSlice";
 
 function DashboardContent() {
   const {
@@ -87,10 +90,21 @@ function DashboardContent() {
     setHasSorted(false);
   }, [issues]);
 
+  // Local delete handler to update local Redux after API
+  const handleDelete = async (issueKey: string) => {
+    try {
+      await deleteJiraIssue(issueKey).unwrap();
+      dispatch(deleteIssue(issueKey));
+      setShowNotification(true);
+    } catch (e) {
+      // Optionally handle error
+    } finally {
+      resetDelete();
+    }
+  };
+
   if (isLoading || isFetching) return <Loading />;
   if (isError) notFound();
-
-  console.log(localIssues);
 
   return (
     <div className={styles.container}>
@@ -132,11 +146,51 @@ function DashboardContent() {
       </Grid>
 
       <Grid>
-        {sortedIssues?.map((issue: IIssue) => (
-          <Grid.Col key={issue.key} span={{ base: 12, md: 6, lg: 4, xl: 3 }}>
-            <IssueCard issue={issue} onDelete={deleteJiraIssue} />
-          </Grid.Col>
-        ))}
+        <Grid.Col
+          span={{ base: 12, md: 6, lg: 4, xl: 4 }}
+          style={{ marginBottom: "20px" }}
+        >
+          <Title order={5}>To Do</Title>
+          {sortedIssues
+            .filter((issue) => issue.status.toLowerCase() === "to do")
+            .map((issue) => (
+              <IssueCard
+                key={issue.key}
+                issue={issue}
+                onDelete={handleDelete}
+              />
+            ))}
+        </Grid.Col>
+        <Grid.Col
+          span={{ base: 12, md: 6, lg: 4, xl: 4 }}
+          style={{ marginBottom: "20px" }}
+        >
+          <Title order={5}>In Progress</Title>
+          {sortedIssues
+            .filter((issue) => issue.status.toLowerCase() === "in progress")
+            .map((issue) => (
+              <IssueCard
+                key={issue.key}
+                issue={issue}
+                onDelete={handleDelete}
+              />
+            ))}
+        </Grid.Col>
+        <Grid.Col
+          span={{ base: 12, md: 6, lg: 4, xl: 4 }}
+          style={{ marginBottom: 20 }}
+        >
+          <Title order={5}>Done</Title>
+          {sortedIssues
+            .filter((issue) => issue.status.toLowerCase() === "done")
+            .map((issue) => (
+              <IssueCard
+                key={issue.key}
+                issue={issue}
+                onDelete={handleDelete}
+              />
+            ))}
+        </Grid.Col>
       </Grid>
     </div>
   );
