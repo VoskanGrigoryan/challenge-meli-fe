@@ -1,5 +1,6 @@
 import { IIssue } from "@/src/components/card/IssueCard";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { JiraIssue } from "./jiraTypes";
 
 export const jiraApi = createApi({
   reducerPath: "jiraApi",
@@ -16,8 +17,8 @@ export const jiraApi = createApi({
     getAllJiraIssues: builder.query<IIssue[], void>({
       query: () => "",
       providesTags: ["Issues"],
-      transformResponse: (response: any) =>
-        response.issues.map((issue: any) => ({
+      transformResponse: (response: { issues: JiraIssue[] }) =>
+        response.issues.map((issue) => ({
           key: issue.key,
           summary: issue.fields.summary,
           status: issue.fields.status.name,
