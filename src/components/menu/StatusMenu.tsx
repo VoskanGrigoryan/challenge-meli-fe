@@ -9,18 +9,20 @@ import {
   useGetAllJiraIssuesQuery,
 } from "@/src/redux/features/jira/JiraSlice";
 import { useToast } from "../toast/ToastProvider";
+import { useDispatch } from "react-redux";
+import { updateIssue } from "@/src/redux/features/jira/jiraLocalSlice";
 
 const StatusMenu = ({ issue }: { issue: IIssue }) => {
-  
   const { mapJiraColorToMantine } = useJiraColor();
   const [changeIssueStatus, { isLoading }] = useChangeIssueStatusMutation();
   const { refetch } = useGetAllJiraIssuesQuery();
   const { showToast } = useToast();
+  const dispatch = useDispatch();
 
   const handleStatusChange = async (status: string) => {
     try {
       await changeIssueStatus({ issueKey: issue.key, status }).unwrap();
-      refetch();
+      dispatch(updateIssue({ ...issue, status }));
       showToast({
         title: "Estado actualizado",
         message: `El estado fue cambiado a '${status}'.`,

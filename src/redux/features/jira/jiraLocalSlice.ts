@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IIssue } from '@/src/components/card/IssueCard';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IIssue } from "@/src/components/card/IssueCard";
 
 interface JiraLocalState {
   issues: IIssue[];
@@ -10,7 +10,7 @@ const initialState: JiraLocalState = {
 };
 
 const jiraLocalSlice = createSlice({
-  name: 'jiraLocal',
+  name: "jiraLocal",
   initialState,
   reducers: {
     setIssues(state, action: PayloadAction<IIssue[]>) {
@@ -21,9 +21,9 @@ const jiraLocalSlice = createSlice({
     },
     sortIssuesByStatus(state) {
       const statusOrder: Record<string, number> = {
-        'to do': 11,
-        'in progress': 21,
-        'done': 31,
+        "to do": 11,
+        "in progress": 21,
+        done: 31,
       };
       state.issues.sort((a, b) => {
         const aOrder = statusOrder[a.status.toLowerCase()] ?? 99;
@@ -31,9 +31,27 @@ const jiraLocalSlice = createSlice({
         return aOrder - bOrder;
       });
     },
-    // Add more sort/filter reducers as needed
+    addIssue(state, action: PayloadAction<IIssue>) {
+      state.issues.push(action.payload);
+    },
+    updateIssue(state, action: PayloadAction<IIssue>) {
+      const idx = state.issues.findIndex((i) => i.key === action.payload.key);
+      if (idx !== -1) {
+        state.issues[idx] = action.payload;
+      }
+    },
+    deleteIssue(state, action: PayloadAction<string>) {
+      state.issues = state.issues.filter((i) => i.key !== action.payload);
+    },
   },
 });
 
-export const { setIssues, sortIssuesBySummary, sortIssuesByStatus } = jiraLocalSlice.actions;
+export const {
+  setIssues,
+  sortIssuesBySummary,
+  sortIssuesByStatus,
+  addIssue,
+  updateIssue,
+  deleteIssue,
+} = jiraLocalSlice.actions;
 export default jiraLocalSlice.reducer;

@@ -43,7 +43,7 @@ export const jiraApi = createApi({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Issues"],
+      // Removed invalidatesTags to prevent refetch after mutation
     }),
     
     // Delete issue
@@ -52,7 +52,7 @@ export const jiraApi = createApi({
         url: `?issueKey=${issueKey}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Issues"],
+      // Removed invalidatesTags to prevent refetch after mutation
     }),
 
     // Change issue status (transition)
@@ -68,7 +68,7 @@ export const jiraApi = createApi({
           transitionId: getTransitionId(status),
         },
       }),
-      invalidatesTags: ["Issues"],
+      // Removed invalidatesTags to prevent refetch after mutation
     }),
   }),
 });
