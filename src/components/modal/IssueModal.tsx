@@ -96,7 +96,7 @@ export default function IssueModal({
     <Modal
       opened={opened}
       onClose={handleClose}
-      title="Create New Issue"
+      title="Crear nueva tarea"
       size="lg"
       centered
       overlayProps={{ blur: 3 }}

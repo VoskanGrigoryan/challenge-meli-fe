@@ -16,6 +16,12 @@ const auth = {
   password: JIRA_API_TOKEN
 };
 
+// Error interface for axios error handling
+interface JiraApiError {
+  response?: { data?: unknown; status?: number };
+  message?: string;
+}
+
 // GET - Fetch issues
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -30,10 +36,11 @@ export async function GET(req: NextRequest) {
       }
     });
     return NextResponse.json({ issues: response.data.issues });
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as JiraApiError;
     return NextResponse.json(
-      { error: error.response?.data || error.message },
-      { status: error.response?.status || 500 }
+      { error: err.response?.data || err.message },
+      { status: err.response?.status || 500 }
     );
   }
 }
@@ -85,10 +92,11 @@ export async function POST(req: NextRequest) {
     );
     return NextResponse.json({ key: response.data.key });
 
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as JiraApiError;
     return NextResponse.json(
-      { error: error.response?.data || error.message },
-      { status: error.response?.status || 500 }
+      { error: err.response?.data || err.message },
+      { status: err.response?.status || 500 }
     );
   }
 }
@@ -108,10 +116,11 @@ export async function DELETE(req: NextRequest) {
   try {
     await axios.delete(`${JIRA_API_URL}/issue/${issueKey}`, { auth });
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as JiraApiError;
     return NextResponse.json(
-      { error: error.response?.data || error.message },
-      { status: error.response?.status || 500 }
+      { error: err.response?.data || err.message },
+      { status: err.response?.status || 500 }
     );
   }
 }

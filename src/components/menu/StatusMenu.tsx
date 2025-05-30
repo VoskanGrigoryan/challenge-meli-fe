@@ -11,6 +11,7 @@ import {
 import { useToast } from "../toast/ToastProvider";
 
 const StatusMenu = ({ issue }: { issue: IIssue }) => {
+  
   const { mapJiraColorToMantine } = useJiraColor();
   const [changeIssueStatus, { isLoading }] = useChangeIssueStatusMutation();
   const { refetch } = useGetAllJiraIssuesQuery();
@@ -25,11 +26,12 @@ const StatusMenu = ({ issue }: { issue: IIssue }) => {
         message: `El estado fue cambiado a '${status}'.`,
         color: "blue",
       });
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { data?: { message?: string } };
       showToast({
         title: "Error al cambiar estado",
         message:
-          error?.data?.message || "No se pudo cambiar el estado del issue.",
+          err?.data?.message || "No se pudo cambiar el estado del issue.",
         color: "red",
       });
     }

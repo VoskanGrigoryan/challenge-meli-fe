@@ -45,6 +45,7 @@ export const jiraApi = createApi({
       }),
       invalidatesTags: ["Issues"],
     }),
+    
     // Delete issue
     deleteJiraIssue: builder.mutation<void, string>({
       query: (issueKey) => ({
